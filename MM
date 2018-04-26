@@ -22,3 +22,6 @@ condition record for individual message type
 包含組織or文件類型...等filter條件外，還指定partner type, 以及要輸出的media, output time 等。
 如果access sequence可以設定多筆，則會有多個media輸出。
 
+如果是EDI, 則要在partner profile有相對應的記錄。
+> 設定partner role為某某時，會有inbound/outbound message(-->
+
