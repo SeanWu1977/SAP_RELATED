@@ -1,0 +1,24 @@
+message output determination
+
+存檔時，會依application & msg schmea來決定要檢查那些message type
+
+applecation 1 : n msg. schema 1 : n message type
+ex. EF -> RMBEF1 -> NEW,MAHN...
+
+每個message type都有指定一個requirement(abap program)
+此requirement檢查該文件的狀態，如果符合就會執行該message type的相關程序。
+
+實際的運作上，會對所有message type進行requirement的檢查，
+如果符合，就會在進行condition record(是由access sequence來設定比對個condition table，每個message type 都有自已的condition record)比對。
+
+message type (output type)中會定義
+> access sequence (定義比較的condition table 以及 設定是否要多值或單值。另外condition record是跟message type綁在一起)
+> partner role 可用那個meida
+> 可用的media以及該media使用的程式
+> 預設的Dispatch time/Transmission Medium/Partner Function (<--這是給建condition record用的)
+
+
+condition record for individual message type
+包含組織or文件類型...等filter條件外，還指定partner type, 以及要輸出的media, output time 等。
+如果access sequence可以設定多筆，則會有多個media輸出。
+
