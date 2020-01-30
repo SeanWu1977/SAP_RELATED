@@ -39,3 +39,11 @@ sp_dboption <DB>, 'trunc',true
 # stop server
 > shutdown 
 > go
+
+# check device
+sp_helpdevice
+
+# list db
+sp_helpdb
+# description db
+sp_helpdb <dbname>
