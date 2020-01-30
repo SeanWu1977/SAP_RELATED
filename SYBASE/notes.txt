@@ -57,3 +57,8 @@ go
 (2) Extended saptempdb onto the same device:
 alter database saptempdb on saptempdb_dev_name="XXXXM"  /*This is the adidtional space you are adding to the database*/
 go
+
+
+# simpel backup restore
+dump database target_db to "/dumps/source_db.dmp"
+load database target_db from "/dumps/source_db.dmp"
