@@ -47,3 +47,13 @@ sp_helpdevice
 sp_helpdb
 # description db
 sp_helpdb <dbname>
+
+# resize db
+(1) resize device
+use master
+go
+disk resize name="saptempdb_data_001", size="XXXXM" 
+go
+(2) Extended saptempdb onto the same device:
+alter database saptempdb on saptempdb_dev_name="XXXXM"  /*This is the adidtional space you are adding to the database*/
+go
