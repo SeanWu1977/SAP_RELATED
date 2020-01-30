@@ -32,3 +32,10 @@ rsecssfx put DB_CONNECT/DEFAULT_DB_PASSWORD <password>
 # disable archiving log mode
 # sp_dboption [dbname, optname, {true | false}]
 sp_dboption <DB>, 'trunc',true
+
+
+# start server (login syb<sid>)
+./startserver -f /sybase/N74/ASE-16_0/install/RUN_N74
+# stop server
+> shutdown 
+> go
