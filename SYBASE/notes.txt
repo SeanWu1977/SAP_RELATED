@@ -27,3 +27,8 @@ rsecssfx get DB_CONNECT/DEFAULT_DB_USER
 rsecssfx put DB_CONNECT/DEFAULT_DB_USER SAPSR3DB -plain
 
 rsecssfx put DB_CONNECT/DEFAULT_DB_PASSWORD <password>
+
+
+# disable archiving log mode
+# sp_dboption [dbname, optname, {true | false}]
+sp_dboption <DB>, 'trunc',true
