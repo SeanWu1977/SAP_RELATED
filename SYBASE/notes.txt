@@ -1,0 +1,29 @@
+log file : /sybase/<SID>/ASE-16_0/install
+log file : /hana/shared/HDB/HDB00/s15sp1-h2-ha1/trace
+
+# 連線
+isql -Usapsa -P<pwd> -S<SID> -X
+
+# default sa is lock, to unlock sa
+isql -Usapsso -SN74 -X -P<pwd>
+1> sp_locklogin 'sa', 'unlock'
+2> go
+
+Remember to 'lock' 'sa' login once the maintenance is complete
+ 
+Syntax:
+1> sp_locklogin 'sa', 'lock'
+2> go
+
+# check db users
+1> sp_helpuser
+
+# SUM db connecton error
+改過密碼，所以重設Secure Storage的密碼
+use <sid>adm login
+
+rsecssfx get DB_CONNECT/DEFAULT_DB_USER
+
+rsecssfx put DB_CONNECT/DEFAULT_DB_USER SAPSR3DB -plain
+
+rsecssfx put DB_CONNECT/DEFAULT_DB_PASSWORD <password>
