@@ -62,3 +62,9 @@ go
 # simpel backup restore
 dump database target_db to "/dumps/source_db.dmp"
 load database target_db from "/dumps/source_db.dmp"
+
+
+# 
+sp_cacheconfig "default data cache",
+sp_configure  "default data cache"
+sp_helpcache
