@@ -58,11 +58,15 @@ go
 alter database saptempdb on saptempdb_dev_name="XXXXM"  /*This is the adidtional space you are adding to the database*/
 go
 (3) new device
+(3-1)for data
 1> disk init name = "N74_data_002", physname = "/sybase/N74/sapdata_1/N74_data_002.dat", size = "20480M"
 2> use master
 3> go
-4> alter database N74 on N74_data_002="10240M"
+4> alter database N74on N74_data_002="10240M"
 5> go
+(3-2)for log
+disk init name = "N74_log_003", physname = "/sybase/N74/saplog_1/N74_log_003.dat", size = "10240M"
+alter database N74 log on N74_log_003="10240M" 
 
 # simpel backup restore
 dump database target_db to "/dumps/source_db.dmp"
