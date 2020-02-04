@@ -57,7 +57,8 @@ go
 (2) Extended saptempdb onto the same device:
 alter database saptempdb on saptempdb_dev_name="XXXXM"  /*This is the adidtional space you are adding to the database*/
 go
-
+(3) new device
+disk init name = "N74_data_002", physname = "/sybase/N74/sapdata_1/N74_data_002.dat", size = "20480M"
 
 # simpel backup restore
 dump database target_db to "/dumps/source_db.dmp"
