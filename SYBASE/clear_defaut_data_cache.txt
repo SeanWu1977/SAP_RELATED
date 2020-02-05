@@ -1,0 +1,2 @@
+To clear cache in "default data cache" you should use dbcc cachedataremove
+for user defined cache you should use sp_unbindcache , or sp_unbindcache_all
