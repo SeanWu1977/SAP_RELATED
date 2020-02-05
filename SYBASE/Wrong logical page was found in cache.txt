@@ -1,0 +1,9 @@
+An attempt was made to fetch logical page '1093679' for database 'N74' (4),
+object 'SEOCOMPODF' (1287008635), index 'SEOCOMPODF' (0), partition
+'SEOCOMPODF_1287008635' (1287008635) from cache 'default data cache'. Wrong
+logical page '16843009' was found in cache.
+
+
+1> select @@version
+1> use N74
+1> dbcc checktable("SAPSR3.SEOCOMPODF")
