@@ -77,3 +77,18 @@ load database target_db from "/dumps/source_db.dmp"
 sp_cacheconfig "default data cache",
 sp_configure  "default data cache"
 sp_helpcache
+
+
+# rebuild index by command(or se14)
+Take a ddlgen of the problem table from the command line (after logging in as syb<sid>:
+ddlgen -USAPSR3 -P<SAPSR3_password> -SSID -DSID -TU -Ntablename -O tablename.ddl
+
+Review the .ddl output and connect with isql and execute the command below (drop index <table_name.index_name>)
+
+isql -USAPSR3 -SSID -X -w999
+use SID
+go
+drop index tablename.indexname~X
+go
+
+=> execute the create index command(s) from the .ddl file
