@@ -79,40 +79,4 @@ sp_configure  "default data cache"
 sp_helpcache
 
 
-# rebuild index by command(or se14)
-Take a ddlgen of the problem table from the command line (after logging in as syb<sid>:
-ddlgen -USAPSR3 -P<SAPSR3_password> -SSID -DSID -TU -Ntablename -O tablename.ddl
-Review the .ddl output and connect with isql and execute the command below (drop index <table_name.index_name>)
 
-1. Connect using isql as below :
-isql -Usapsa -S<SID> -X
-2. Check the Indexes created for the table as below :
-1> use SID
-2> go
-1> setuser "SAPSR3"
-2> go
-1> set quoted_identifier on
-2> go
-1> sp_helpindex "table_name"
-2> go
-Check the name of the required Index.
-3. Drop the Index as below :
-1> drop index "table_name"."index_name"
-2> go
-4. Verify using the below outputs :
-1> sp_helpindex "table_name"
-2> go
-1> sp_help "table_name"
-2> go
-
-
-=> execute the create index command(s) from the .ddl file
-isql -Sserver_name -Uuser_name -Ppassword -iase_ddl.sql -ologfile
-create unique nonclustered index "SEOCOMPODF~0"
-on N74.SAPSR3.SEOCOMPODF(CLSNAME, CMPNAME, VERSION)
-with index_compression = page
-
-
-# 
-dbcc checktable("N74.SAPSR3.SEOCOMPODF")
-dbcc checkindex ("N74.SAPSR3.SEOCOMPODF~X")
