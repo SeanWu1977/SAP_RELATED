@@ -7,3 +7,16 @@ logical page '16843009' was found in cache.
 1> select @@version
 1> use N74
 1> dbcc checktable("SAPSR3.SEOCOMPODF")
+
+
+elect @@version
+sp_helpdevice
+sp_helpdb
+select * from master..sysdatabases
+select * from master..sysdevices
+use N74
+dbcc checktable(sysobjects)
+dbcc checkalloc(sysobjects)
+dbcc traceon(3604)
+dbcc page(<DB index>,<Wrong logical page number>)  ==> dbcc page(4,16843009)
+dbcc traceoff(3604)
