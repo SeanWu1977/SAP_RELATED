@@ -1,0 +1,79 @@
+
+On CA Server
+
+1. Generate the private key of the root CA
+openssl genrsa -out rootCAKey.key 2048
+
+2.Generate the self-signed root CA certificate
+openssl req -x509 -sha256 -new -nodes -key rootCAKey.key -days 3650 -out rootCACert.crt
+
+## error : Unable to load config info from /usr/local/ssl/openssl.cnf on Windows
+## Enviroment Name: OPENSSL_CONF
+## Value: C:\Program Files\OpenSSL\openssl.cnf
+
+
+3.Review the certificate:
+openssl x509 -in rootCACert.crt -text
+
+
+On Guest Server
+
+1. Create the certificate key/private key
+openssl genrsa -out mydomain.com.key 2048
+
+2. Create the signing (csr)
+(one of following method)
+ 
+  2.1 sapgenpse
+  cd D:\webdispatcher_run
+  sapgenpse get_pse -p D:\webdispatcher_run\sec\SAPSSLS.pse -r sapwebdisp.req -k GN-dNSName:seanwu.itts.com.tw "CN=itts-seanwu-nb.itts.com.tw, OU=BASIS, O=ITTS, C=TW"
+  pwd : xxxx
+  #GN-dNSName:seanwu.itts.com.tw 好像沒有用
+
+	2.2 openssl
+	openssl req -new -key mydomain.com.key -out mydomain.com.csr
+ 
+	2.3 openssl
+	openssl req -new -sha256 -key mydomain.com.key -subj "/C=US/ST=CA/O=MyOrg, Inc./CN=mydomain.com" -out mydomain.com.csr
+	
+	2.4 openssl
+	openssl req -new -sha256 \
+    -key mydomain.com.key \
+    -subj "/C=US/ST=CA/O=MyOrg, Inc./CN=mydomain.com" \
+    -reqexts SAN \
+    -config <(cat /etc/ssl/openssl.cnf \
+        <(printf "\n[SAN]\nsubjectAltName=DNS:mydomain.com,DNS:www.mydomain.com")) \
+    -out mydomain.com.csr
+
+	
+3. Verify the csr's content
+openssl req -in mydomain.com.csr -noout -text
+
+
+On CA Server
+1. Generate the certificate by CA 
+openssl x509 -req -in sapwebdisp.req -CA rootCACert.crt -CAkey rootCAKey.key -CAcreateserial -out sapwebdisp.crt -days 3650 -sha256 -extfile something.ext
+
+### something.ext ########
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = ITTS-SEANWU-NB.itts.com.tw
+DNS.2 = ITTS-SEANWU-NB
+#######################
+
+2. Verify the certificate's content
+openssl x509 -in sapwebdisp.crt -text -noout
+
+
+On Guset Server
+# prerequire :set SECUDIR=D:\webdispatcher_run\sec
+sapgenpse seclogin -p D:\webdispatcher_run\sec\SAPSSLS.pse -O sean.wu
+# this will create cred_v2
+#
+sapgenpse import_own_cert -p D:\webdispatcher_run\sec\SAPSSLS.pse -c sapwebdisp.crt -r rootCACert.crt
+sapgenpse get_my_name -p D:\webdispatcher_run\sec\SAPSSLS.pse
+
