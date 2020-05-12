@@ -1,0 +1,39 @@
+D:\webdispatcher_run>sapwebdisp.exe -bootstrap
+SAP Web Dispatcher Bootstrap
+============================
+
+This bootstrap will perform the following steps:
+1. create profile file "sapwebdisp.pfl" for SAP Web Dispatcher (if not already existing)
+2. create user for web based administration in file "icmauth.txt" (if not already exisiting)
+After the bootstrap you can use the web based administration
+
+Generating Profile "sapwebdisp.pfl"
+Hostname of Message Server (MSHOST): s4d1909FPS000
+HTTP Port of Message Server (MSPORT): 8101
+System Identifier of Message Server (SID): S4H
+Checking connection to message server...OK
+Unique System Identifier for SAP Web Dispatcher (SAPSYSTEMNAME, default WDP):
+Unique Instance Number between 0 and 98 for SAP Web Dispatcher (SAPSYSTEM, default 00):
+HTTP port number for SAP Web Dispatcher (default 8000): 30000
+HTTPS port number for SAP Web Dispatcher (default 4300): 30001
+Backend reencryption: 0 encryption off
+                      2 encryption on
+                      (default 0) : 2
+->  Please import backend certificate to trusted list of PSE SAPSSLC.pse
+->  Use PSE Management of the Web administration
+Number of connections (default: 2000):
+set DIR_INSTANCE = D:\webdispatcher_run
+Profile "sapwebdisp.pfl" generated
+Web Administration user (default icmadm):
+Web Administration user password
+(if no input, generate a new random password):*******
+Retype your Web Administration user password: ********
+Authentication file "icmauth.txt" generated
+Web Administration user is "icmadm" with your selected password
+Web administration accessible only with SSL/TLS using "https://ITTS-SEANWU-NB.itts.com.tw:30001/sap/wdisp/admin"
+
+SAP Web Dispatcher bootstrap ended (rc=0)
+
+*** INFO: You can now start SAP Web Dispatcher
+1. directly:      sapwebdisp pf=sapwebdisp.pfl
+2. Start Service: sapstartsrv pf=sapwebdisp.pfl
