@@ -77,3 +77,5 @@ sapgenpse seclogin -p D:\webdispatcher_run\sec\SAPSSLS.pse -O sean.wu
 sapgenpse import_own_cert -p D:\webdispatcher_run\sec\SAPSSLS.pse -c sapwebdisp.crt -r rootCACert.crt
 sapgenpse get_my_name -p D:\webdispatcher_run\sec\SAPSSLS.pse
 
+# for trust backend (SSL Re-encryption)
+sapgenpse maintain_pk -a D:\webdispatcher_run\s1909.bin.cer -p D:\webdispatcher_run\sec\SAPSSLC.pse
