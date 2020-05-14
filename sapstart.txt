@@ -1,0 +1,290 @@
+#!/bin/bash
+
+PATH=/bin; export PATH
+LOG=/var/log/sap
+
+words(){ 
+    echo $#
+}
+
+instancestate() {
+    local product=$1
+    local host=$2
+    local instancenr=$3
+    local dbname=$4
+
+    if [ $product == NW -o $product == HANA ]; then
+	/usr/sap/hostctrl/exe/sapcontrol -host $host -nr $instancenr -function GetProcessList 
+	A=$?
+# $#    Stores the number of command-line arguments that were passed to the shell program.
+# $?    Stores the exit value of the last command that was executed.
+# $0    Stores the first word of the entered command (the name of the shell program).
+# $*    Stores all the arguments that were entered on the command line ($1 $2 ...).
+# "$@"  Stores all the arguments that were entered on the command line, individually quoted ("$1" "$2" ...).
+
+
+	if [ $A -eq 3 ]; then
+	    echo "----> SAP instance SYSNR=$instancenr running on host $host at $(date)"
+	    state=running
+	elif [ $A -eq 4 ]; then
+	    echo "----> SAP instance SYSNR=$instancenr not started on host $host yet $(date) "
+	    state=stopped
+	elif [ $A -eq 1 ]; then
+	    echo "----> SAP instance SYSNR=$instancenr : invalid parameter error returned on host $host at $(date) " 
+	    state=transition
+ 	else
+	    echo "----> SAP instance SYSNR=$instancenr partially started on host $host at $(date) [return $A]"
+	    state=transition
+	fi
+    elif [ $product == SYB -o $product == ADA ]; then
+        f=/tmp/$$.$(date +%s)
+	/usr/sap/hostctrl/exe/saphostctrl -host $host -function GetDatabaseStatus -dbname $dbname -dbtype $product > $f
+        cat $f
+        A=$(/usr/bin/head -1 $f)
+        /bin/rm $f
+	if [ "$A" == 'Database Status: Running' ]; then
+	    echo "----> SAP database $product running on host $host at $(date)"
+	    state=running
+	elif [ "$A" == 'Database Status: Stopped' ]; then
+	    echo "----> SAP database $product not started on host $host yet $(date) "
+	    state=stopped
+#	elif [ $A -eq 1 ]; then
+#	    echo "----> SAP instance SYSNR=$instancenr : invalid parameter error returned on host $host at $(date) " 
+#	    state=starting
+	else 
+	    echo "----> SAP instance database $product  partially started on host $host at $(date) [return $A]"
+	    state=transition
+	fi
+    #MARKER2_instancestate
+    else #MARKER instancestate
+	echo "----> unknown product $product"
+	exit -1
+    fi
+}
+
+#
+#-n
+#   string is not null.
+
+#-z
+#  string is null, that is, has zero length
+
+checkdependence(){
+    local DEPENDENCY="$1"
+    if [ ! -z "$DEPENDENCY" ]; then    # -z variable 是不是空
+		local product=$(echo $DEPENDENCY | /usr/bin/cut -d, -f1)
+		local host=$(   echo $DEPENDENCY | /usr/bin/cut -d, -f2)
+		local sysnr=$(  echo $DEPENDENCY | /usr/bin/cut -d, -f3)
+		local dbname=$( echo $DEPENDENCY | /usr/bin/cut -d, -f4)
+		instancestate "$product" "$host" "$sysnr" "$dbname"
+		if [ $state != running ]; then
+			echo "----> Waiting for $product $host $sysnr"
+			let waiting++
+			continue 1
+		fi
+    fi
+}
+
+
+
+depenceon(){
+    local DEPENDENCY="$1"
+    if [ ! -z "$DEPENDENCY" ]; then
+        local Dproduct=$(echo $DEPENDENCY | /usr/bin/cut -d, -f1)
+        local Dhost=$(   echo $DEPENDENCY | /usr/bin/cut -d, -f2)
+        local Dsysnr=$(  echo $DEPENDENCY | /usr/bin/cut -d, -f3)
+        local Ddbname=$( echo $DEPENDENCY | /usr/bin/cut -d, -f4)
+        if [ $Dproduct == $product -a $Dhost == $host -a "$Dsysnr"0 -eq "$sysnr"0  ]; then
+            local Aproduct=$(echo ${INSTANCE[$INDEX]} | /usr/bin/cut -d, -f1)
+            local Ahost=$(   echo ${INSTANCE[$INDEX]} | /usr/bin/cut -d, -f2)
+            local Asysnr=$(  echo ${INSTANCE[$INDEX]} | /usr/bin/cut -d, -f3)
+            local Adbname=$( echo ${INSTANCE[$INDEX]} | /usr/bin/cut -d, -f4)
+            instancestate "$Aproduct" "$Ahost" "$Asysnr" "$Adbname"
+            if [ $state != stopped ]; then
+                echo "----> Instance $product $host $sysnr $bname is waiting for $Aproduct $Ahost $Asysnr $Adbname"
+                let waiting++
+                continue 2
+            fi
+        fi
+    fi
+}
+
+##LIST OF INSTANCES
+MAXWAITTIME=3600
+INSTANCE_INDEXES=" 0 1 2"
+INSTANCE[2]="NW,vhcals4hci,00,,s4hadm"
+INSTANCE[1]="NW,vhcals4hcs,01,,s4hadm"
+INSTANCE[0]="HANA,vhcalhdbdb,02,,hdbadm"
+##LIST OF DEPENDENCES
+INSTANCE_DEPENDENCY_1[2]="NW,vhcals4hcs,01"
+INSTANCE_DEPENDENCY_2[2]="HANA,vhcalhdbdb,02,SYSTEMDB"
+#MAXWAITTIME=3600
+#sample of list of instances
+#INSTANCE_INDEXES="0 1 2"
+#INSTANCE[2]="NW,vhcalj2eci,00,,j2eadm"
+#INSTANCE[1]="NW,vhcalj2ecs,01,,j2eadm"
+#INSTANCE[0]="ADA,vhcalj2edb,,J2E,"
+#sample of list of dependences 
+#INSTANCE_DEPENDENCY_1[2]="NW,vhcalj2ecs,01"    #means INSTANCE[2] depends on NW,vhcalj2ecs,01
+#INSTANCE_DEPENDENCY_2[2]="ADA,vhcalj2edb,,J2E" #means INSTANCE[2] depends on ADA,vhcalj2edb,,J2E
+
+
+
+echo "service $0 $@ at `date`" >> $LOG
+case "$1" in
+    start)
+	echo -n "Starting SAP" 
+	exec >> $LOG 2>&1 
+	echo "Starting SAP"
+        startsec=$(date +%s)
+
+	while true; do
+	    started=0
+	    for index in $INSTANCE_INDEXES; do
+		
+			product=$(echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f1)
+			host=$(   echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f2)
+			sysnr=$(  echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f3)
+			dbname=$( echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f4)
+			instancestate "$product" "$host" "$sysnr" "$dbname"
+			if [ $state == running ] ; then
+				let started++
+				continue
+			fi
+			if [ "${STARTED[$index]}" != true ]; then 
+			    waiting=0
+				checkdependence "${INSTANCE_DEPENDENCY_1[$index]}" 
+				checkdependence "${INSTANCE_DEPENDENCY_2[$index]}" 
+				checkdependence "${INSTANCE_DEPENDENCY_3[$index]}"
+				if [ $waiting == 0 ]; then				
+					echo "----> starting $product $host $sysnr"
+					if [ $product == NW -o $product == HANA ]; then
+						/usr/sap/hostctrl/exe/sapcontrol -host $host -nr $sysnr -function Start
+						startECode=$?
+						echo "----> Start exit code is $startECode"
+					elif [ $product == SYB -o $product == ADA ]; then
+						/usr/sap/hostctrl/exe/saphostctrl -host $host -function StartDatabase -dbname $dbname -dbtype $product -service
+						startECode=$?
+						echo "----> Start exit code is $startECode"
+						#MARKER2_start
+					else #MARKER start
+						echo "unknown product $product (start)"
+						exit -1
+					fi
+					if [ "$startECode" == "0" ]; then
+						STARTED[$index]=true
+					else
+						STARTED[$index]=false
+					fi
+				fi
+			fi
+	    done
+		
+        echo "----> started instances $started, instances waiting to be started $((${#STARTED[*]}-$started))"
+	    if [ $started -eq $(words $INSTANCE_INDEXES) ]; then
+			echo "----> all instances running"
+			break;
+	    fi 
+ 	    duration=$(($(date +%s)-$startsec))
+	    if [ $duration -gt $MAXWAITTIME ]; then
+			echo "----> Maximum wait time $MAXWAITTIME sec for SAP system start is over, giving up."
+			exit -1
+	    fi
+	    sleep 5
+	done
+	echo "Started SAP in $(($(date +%s)-$startsec)) sec"
+        ;;
+		
+		
+		
+    stop)
+        echo -n "Stopping SAP"
+		exec >> $LOG 2>&1 
+        echo "Stopping SAP"
+        startsec=$(date +%s)
+        while true; do
+            stopped=0
+			
+			#for index in $INSTANCE_INDEXES; do
+            for index in $(echo $INSTANCE_INDEXES | rev); do
+                product=$(echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f1)
+                host=$(   echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f2)
+                sysnr=$(  echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f3)
+                dbname=$( echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f4)
+				osuser=$( echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f5)
+                instancestate "$product" "$host" "$sysnr" "$dbname"
+                if [ $state == stopped ] ; then
+					echo "$product$host $sysnr $dbname Stoped." 
+					let stopped++
+					continue
+                fi
+		    
+				if [ "${STOPPED[$index]}" != true ]; then 
+				    waiting=0
+					for INDEX in $INSTANCE_INDEXES; do
+						if [ $INDEX -ne $index ]; then
+							depenceon "${INSTANCE_DEPENDENCY_1[$INDEX]}"
+							depenceon "${INSTANCE_DEPENDENCY_2[$INDEX]}"
+							depenceon "${INSTANCE_DEPENDENCY_3[$INDEX]}"
+						fi	
+					done	
+					if [ $waiting == 0 ]; then	
+						echo "----> stopping $product $host $sysnr"
+						if [ $product == NW -o $product == HANA ]; then
+							#requires credentials: /usr/sap/hostctrl/exe/sapcontrol -host $host -nr $sysnr -function Stop, alternative:
+							su - -c "$(readlink -f /usr/sap/*/*$sysnr/exe/sapcontrol) -nr $sysnr -function Stop" $osuser
+						elif [ $product == SYB -o $product == ADA ]; then
+							/usr/sap/hostctrl/exe/saphostctrl -host $host -function StopDatabase -dbname $dbname -dbtype $product -service
+						#MARKER2_stop
+						else #MARKER stop
+							echo "unknown product $product (stop)"
+							exit -1
+						fi
+						STOPPED[$index]=true
+					fi
+				fi
+			done
+			echo "----> stopped instances $stopped, instances waiting to be stopped $((${#STOPPED[*]}-$stopped))"
+			if [ $stopped -eq $(words $INSTANCE_INDEXES) ]; then
+				echo "----> all instances stopped"
+				break;
+			fi
+			duration=$(($(date +%s)-$startsec))
+			if [ $duration -gt $MAXWAITTIME ]; then
+				echo "----> Maximum wait time $MAXWAITTIME sec for SAP system stop is over, giving up."
+				exit -1
+			fi
+			sleep 1
+		done
+		echo "Stopped SAP in $(($(date +%s)-$startsec)) sec"
+		;;
+			
+	status)
+		echo -n "Status of SAP"
+		running=0
+		stopped=0
+		intransition=0
+		error=0
+        for index in $INSTANCE_INDEXES; do
+            product=$(echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f1)
+            host=$(   echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f2)
+            sysnr=$(  echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f3)
+            dbname=$( echo ${INSTANCE[$index]} | /usr/bin/cut -d, -f4)
+			stateinstancestate "$product" "$host" "$sysnr" "$dbname"
+			if [   "$state" == running ]; then
+				let running++
+			elif [ "$state" == stopped ]; then
+				let stopped++
+			elif [ "$state" == transition ]; then
+				let intransition++
+			else
+				let error++
+			fi
+		done
+        echo "----> instances in state stopped $stopped, running $running, intransition $intransition and error $error"
+		;;
+    *)
+        echo "Usage: $0 {start|stop|status}"
+		exit 1
+        ;;
+esac
