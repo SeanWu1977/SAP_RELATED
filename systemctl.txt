@@ -1,0 +1,51 @@
+
+/usr/lib/systemd/system/：每個服務最主要的啟動腳本設定，有點類似以前的 /etc/init.d 底下的檔案；
+
+/run/systemd/system/：系統執行過程中所產生的服務腳本，這些腳本的優先序要比 /usr/lib/systemd/system/ 高！
+
+/etc/systemd/system/：管理員依據主機系統的需求所建立的執行腳本，其實這個目錄有點像以前 /etc/rc.d/rc5.d/Sxx 之類的功能！
+                      執行優先序又比 /run/systemd/system/ 高喔！
+					  
+					  
+					  
+[root@study ~]# systemctl [command] [unit]
+command 主要有：
+start     ：立刻啟動後面接的 unit
+stop      ：立刻關閉後面接的 unit
+restart   ：立刻關閉後啟動後面接的 unit，亦即執行 stop 再 start 的意思
+reload    ：不關閉後面接的 unit 的情況下，重新載入設定檔，讓設定生效
+enable    ：設定下次開機時，後面接的 unit 會被啟動
+disable   ：設定下次開機時，後面接的 unit 不會被啟動
+status    ：目前後面接的這個 unit 的狀態，會列出有沒有正在執行、開機預設執行否、登錄等資訊等！
+is-active ：目前有沒有正在運作中
+is-enabled：開機時有沒有預設要啟用這個 unit
+cat       ：顯示內部設定檔，即/etc/systemd/system/xxx.service
+show      ：服務的底層設定值
+mask      ：永遠禁用(sm01)
+unmask    ：解除禁用
+edit      ：編輯服務檔(不加--full時，會新增在/etc/systemd/system/xxx.service.d/override.conf，加--full時，則會修改原始/etc/systemd/system/xxx.service)
+
+####### example #######
+systemctl status atd.service
+atd.service - Job spooling tools
+   Loaded: loaded (/usr/lib/systemd/system/atd.service; enabled)            # Loaded：這行在說明，開機的時候這個 unit 會不會啟動，enabled 為開機啟動，disabled 開機不會啟動
+   Active: active (running) since Mon 2015-08-10 19:17:09 CST; 5h 42min ago # Active：現在這個 unit 的狀態是正在執行 (running) 或沒有執行 (dead)
+ Main PID: 1350 (atd)
+   CGroup: /system.slice/atd.service
+           └─1350 /usr/sbin/atd -f
+
+Aug 10 19:17:09 study.centos.vbird systemd[1]: Started Job spooling tools.
+
+
+/usr/lib/systemd/system/：
+使用 CentOS 官方提供的軟體安裝後，預設的啟動腳本設定檔都放在這裡，這裡的資料盡量不要修改～ 要修改時，請到 /etc/systemd/system 底下修改較佳！
+/run/systemd/system/：
+系統執行過程中所產生的服務腳本，這些腳本的優先序要比 /usr/lib/systemd/system/ 高！
+/etc/systemd/system/：
+管理員依據主機系統的需求所建立的執行腳本，其實這個目錄有點像以前 /etc/rc.d/rc5.d/Sxx 之類的功能！執行優先序又比 /run/systemd/system/ 高喔！
+/etc/sysconfig/*：
+幾乎所有的服務都會將初始化的一些選項設定寫入到這個目錄下，舉例來說，mandb 所要更新的 man page 索引中，需要加入的參數就寫入到此目錄下的 man-db 當中喔！而網路的設定則寫在 /etc/sysconfig/network-scripts/ 這個目錄內。所以，這個目錄內的檔案也是挺重要的；
+/var/lib/：
+一些會產生資料的服務都會將他的資料寫入到 /var/lib/ 目錄中。舉例來說，資料庫管理系統 Mariadb 的資料庫預設就是寫入 /var/lib/mysql/ 這個目錄下啦！
+/run/：
+放置了好多 daemon 的暫存檔，包括 lock file 以及 PID file 等等。
