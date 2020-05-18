@@ -1,0 +1,77 @@
+提供某個服務的 daemon 雖然只是一支程式而已，但是這支 daemon 的啟動還是需要執行檔、設定檔、執行環境等等，
+舉例來說，你可以查閱一下 httpd 這個程式 (man httpd) ，裡面可談到不少的選項與參數呢！
+此外，為了管理上面的方便， 所以通常 distribution 都會記錄每一支 daemon 啟動後所取得程序的 PID 在 /var/run/ 
+
+/etc/init.d/* ：啟動腳本放置處
+系統上幾乎所有的服務啟動腳本都放置在這裡！事實上這是公認的目錄，我們的 CentOS 實際上放置在 /etc/rc.d/init.d/ 啦！ 不過還是有設定連結檔到 /etc/init.d/ 的！既然這是公認的目錄，因此建議您記憶這個目錄即可！
+
+/etc/sysconfig/* ：各服務的 "初始化環境" 設定檔
+幾乎所有的服務都會將初始化的一些選項設定寫入到這個目錄下，
+舉例來說，登錄檔的 syslog 這支 daemon 的初始化設定就寫入在 /etc/sysconfig/syslog 這裡呢！
+而網路的設定則寫在 /etc/sysconfig/network 這個檔案中。 所以，這個目錄內的檔案也是挺重要的；
+
+/etc/xinetd.conf, /etc/xinetd.d/* ：super daemon 設定檔
+super daemon 的主要設定檔 (其實是預設值) 為 /etc/xinetd.conf ，
+不過我們上面就談到了， super daemon 只是一個統一管理的機制，他所管理的其他 daemon 的設定則寫在 /etc/xinetd.d/* 裡頭喔！
+
+/etc/* ：各服務各自的設定檔
+
+/var/lib/* ：各服務產生的資料庫
+一些會產生資料的服務都會將他的資料寫入到 /var/lib/ 目錄中。舉例來說，資料庫管理系統 MySQL 的資料庫預設就是寫入 /var/lib/mysql/ 這個目錄下啦！
+
+/var/run/* ：各服務的程序之 PID 記錄處
+我們在第十七章談到可以使用訊號 (signal) 來管理程序， 既然 daemon 是程序，所以當然也可以利用 kill 或 killall 來管理啦！不過為了擔心管理時影響到其他的程序， 因此 daemon 通常會將自己的 PID 記錄一份到 /var/run/ 當中！例如登錄檔的 PID 就記錄在 /var/run/syslogd.pid 這個檔案中。如此一來， /etc/init.d/syslog 就能夠簡單的管理自己的程序囉。
+
+## run level
+--level<等級代號>指定讀系統服務要在哪一個執行等級中開啟或關畢。
+等級0表示：表示關機
+等級1表示：單用戶模式
+等級2表示：無網絡連接的多用戶命令行模式
+等級3表示：有網絡連接的多用戶命令行模式
+等級4表示：不可用
+等級5表示：帶圖形界面的多用戶模式
+等級6表示：重新啟動
+
+
+## 顯示服務啟動狀態
+chkconfig --list oracle_db
+oracle_db  0:off  1:off  2:off  3:off  4:off  5:off  6:off
+
+# 當在/etc/init.d下增加檔案時，就可以看到了，只不過所有的run level都是設為off
+
+chkconfig --add oracle_db
+# 把該服務的runlevel 2/3/5 設為on
+oracle_db  0:off  1:off  2:on   3:on   4:off  5:on   6:off
+
+
+chkconfig --add name：增加一項新的服務。 chkconfig確保每個運行級有一項啟動(S)或者殺死(K)入口。如有缺少，則會從缺省的init腳本自動建立。
+                      預設會加到2/3/5
+
+chkconfig --del name：刪除服務，並把相關符號連接從/etc/rc[0-6].d刪除。
+
+chkconfig [--level levels] name：設置某一服務在指定的運行級是被啟動，停止還是重置。
+
+
+
+## super deamon : xinet.d ##
+super deamon 設定檔 : /etc/xinetd.conf
+/etc/xinited.d/ 每個檔案會有設定要執行的程式以及相關參數(ex: disable 是否啟動)
+    所有xinetd 管理的服務，都可以透過 /etc/hosts.allow, /etc/hosts.deny 來設定防火牆
+    檔案語法如下：
+        <service(program_name)> : <IP, domain, hostname> : <action>
+        rsync : 127.0.0.100       : deny
+        rsync : 127.0.0.200       : deny
+    
+    
+## 設定開機後立即啟動服務的方法
+就如同上面提到的，我們使用 netstat 僅能觀察到目前已經啟動的 daemon ，
+使用 service 這個指令或者是『 /etc/init.d/* start 』的方法則僅能在目前的環境下立即啟動某個服務而已。 
+那麼重新開機後呢？該服務是否還是繼續的自動啟動？這個時候我們就得要了解一下，到底我的 Linux 主機是怎麼開機的呢？
+
+1.打開電腦電源，開始讀取 BIOS 並進行主機的自我測試；
+2.透過 BIOS 取得第一個可開機裝置，讀取主要開機區 (MBR) 取得開機管理程式；
+3.透過開機管理程式的設定，取得 kernel 並載入記憶體且偵測系統硬體；
+4.核心主動呼叫 init 程式；
+5.init 程式開始執行系統初始化 (/etc/rc.d/rc.sysinit)
+(*) 6.依據 init 的設定進行 daemon start (/etc/rc.d/rc[0-6].d/*)
+7.載入本機設定 (/etc/rc.d/rc.local)
