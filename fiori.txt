@@ -1,2 +1,20 @@
 SAP Fiori Home - SAP Fiori - Community Wiki
 https://wiki.scn.sap.com/wiki/display/Fiori/SAP+Fiori+Home
+
+
+
+how to add fiori app for traditional t-code
+
+1. create semantic object (/n/UI2/SEMOBJ_SAP):ZBASIS
+
+2.(option) create Launchpad role (LPD_CUST) : ZBC_LPD 
+  2.1 assign transaction ST02 with  Application Alias ZST02
+
+3. create catalog :ZC_BASIS
+  3.1 create title (need assign sematic object)
+  3.2 create Target Mapping (sematic object to transaction alais)
+
+4. create groups (fiori tab name):ZGP_BC
+  4.1 add title via seach catalog and select title
+  
+5. create pfcg role : ZBC_FIORI
