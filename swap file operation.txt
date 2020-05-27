@@ -1,0 +1,46 @@
+How to add Swap File
+	1. 二個方法選一個
+		sudo dd if=/dev/zero of=/swapfile bs=1024 count=1048576
+		sudo fallocate -l 20G /swapfile/swapfile (高版本的不能用)
+
+	2. sudo chmod 600 /swapfile/swapfile
+
+	3. sudo mkswap /swapfile/swapfile
+
+	4. sudo swapon /swapfile/swapfile
+
+	5. vi /etc/fstab
+		/swapfile/swapfile swap swap defaults 0 0
+
+	6. swapon -a # 啟用
+
+	7. swapon -s # show
+	
+Create on btrfs 
+
+Create an empty file: touch /swapfile/swapfile
+Use chattr to set NoCOW attribute to it: chattr +C /swapfile/swapfile
+Verify that C attribute appeared: lsattr /swapfile
+Fill it: dd if=/dev/zero of=/swapfile/swapfile bs=1M count=20480 # for 1 gigabyte
+mkswap /swapfile && chmod 600 /swapfile && swapon /swapfile
+
+
+
+How to adjust the swappiness value
+	Swappiness can have a value between 0 and 100. 
+	A low value will make the kernel to try to avoid swapping whenever possible, 
+	while a higher value will make the kernel to use the swap space more aggressively.
+	
+	1. cat /proc/sys/vm/swappiness
+	
+	2. sudo sysctl vm.swappiness=10
+	
+	3. /etc/sysctl.conf
+		vm.swappiness=10
+		
+How to remove Swap File
+	1. sudo swapoff -v /swapfile
+	
+	2. Remove the swap file entry /swapfile swap swap defaults 0 0 from the /etc/fstab file.
+
+	3. sudo rm /swapfile

@@ -1,0 +1,9 @@
+#change hostname
+
+sudo vi /etc/hostname
+sudo vi /etc/hosts
+sudo hostname new-server-name-here
+
+#display hostname
+
+hostnamectl

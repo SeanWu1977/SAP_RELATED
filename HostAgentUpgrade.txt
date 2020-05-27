@@ -1,0 +1,17 @@
+root
+/usr/sap/hostctrl/exe/saphostexec -upgrade -archive <path to downloaded SAPHOSTAGENT<SP-version>.SAR>
+
+
+
+sapadm
+/usr/sap/hostctrl/exe/hostexecstart -upgrade <path to downloaded SAPHOSTAGENT<SP-version>.SAR>
+
+
+
+root
+
+SAPCAR 
+SAPHOSTAGENT/saphostexec -upgrade
+
+/usr/sap/hostctrl/exe/saphostexec -restart
+/usr/sap/hostctrl/exe/saphostexec -status

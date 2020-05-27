@@ -1,0 +1,47 @@
+7.1.3.1 停用/啟用快照 REPORT DOCUMENTATION BUG#
+三種快照類型 (時間軸、安裝、管理) 均可獨立啟用或停用。
+
+停用/啟用時間軸快照
+	啟用：  snapper-c root set-config "TIMELINE_CREATE=yes"
+	停用：  snapper -c root set-config "TIMELINE_CREATE=no"
+
+	預設會啟用時間軸快照，根分割區除外。
+
+停用/啟用安裝快照
+	啟用：  安裝套件 snapper-zypp-plugin
+
+	停用：  解除安裝套件 snapper-zypp-plugin
+
+	預設系統會啟用安裝快照。
+	
+================================================		
+ /etc/snapper/zypp-plugin.conf	
+ 
+match 屬性定義模式是 Unix 外圍程序樣式的萬用字元 (w) 還是 Python正規表示式 (re)。
+
+如果符合指定模式且對應的套件標示為 important (例如核心套件)，則快照也會標示為 important。
+
+用於比對套件名稱的模式。根據 match 屬性的設定，特殊字元也可能會被解譯為外圍程序萬用字元或正規表示式。此模式符合所有以 kernel- 開頭的套件名稱。
+
+================================================	
+<?xml version="1.0" encoding="utf-8"?>
+<snapper-zypp-plugin-conf>
+ <solvables>
+  <solvable match="w" important="true">kernel-*</solvable>
+  <solvable match="w" important="true">dracut</solvable>
+  <solvable match="w" important="true">glibc</solvable>
+  <solvable match="w" important="true">systemd*</solvable>
+  <solvable match="w" important="true">udev</solvable>
+  <!-- 原本下行是沒有mark
+   <solvable match="w">*</solvable>  ## 此行無條件符合所有套件。
+   -->
+ </solvables>
+</snapper-zypp-plugin-conf>	
+================================================		
+
+停用/啟用管理快照
+	啟用：  在 /etc/sysconfig/yast2 中將 USE_SNAPPER 設定為 yes。
+
+	停用：  在 /etc/sysconfig/yast2 中將 USE_SNAPPER 設定為 no。
+
+	預設系統會啟用管理快照。

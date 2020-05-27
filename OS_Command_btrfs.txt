@@ -1,0 +1,396 @@
+du -shc /var/*
+ls -lt  (new -> old)
+ls -ltr (old -> new)
+
+
+find /opt/backup            -type f -mtime +30 -exec rm -f {} \;
+find /var/log -name "*.log" -type f -mtime +30 -exec rm -f {} \;
+
+lsof +L1
+lsof | grep delete
+
+
+btrfs 
+
+
+SBW-DEV:/.snapshots # btrfs quota enable /
+SBW-DEV:/.snapshots # btrfs subvolume show /
+/
+	Name: 			snapshot
+	UUID: 			e1c636a8-4508-2e46-a911-cd88a4ce0e4c
+	Parent UUID: 		7975cd7b-a7a8-da40-87f0-3dbd9d80f117
+	Received UUID: 		-
+	Creation time: 		2020-04-22 22:56:46 +0800
+	Subvolume ID: 		259
+	Generation: 		2228
+	Gen at creation: 	11
+	Parent ID: 		258
+	Top level ID: 		258
+	Flags: 			-
+	Snapshot(s):
+				@/.snapshots/20/snapshot
+				@/.snapshots/21/snapshot
+				@/.snapshots/22/snapshot
+				@/.snapshots/23/snapshot
+				@/.snapshots/24/snapshot
+				@/.snapshots/25/snapshot
+				@/.snapshots/26/snapshot
+				@/.snapshots/27/snapshot
+				@/.snapshots/28/snapshot
+				@/.snapshots/29/snapshot
+				@/.snapshots/30/snapshot
+				@/.snapshots/31/snapshot
+				@/.snapshots/32/snapshot
+				@/.snapshots/33/snapshot
+				@/.snapshots/34/snapshot
+				@/.snapshots/35/snapshot
+				@/.snapshots/36/snapshot
+				@/.snapshots/37/snapshot
+				@/.snapshots/38/snapshot
+				@/.snapshots/39/snapshot
+				@/.snapshots/40/snapshot
+				@/.snapshots/41/snapshot
+				@/.snapshots/42/snapshot
+				@/.snapshots/43/snapshot
+				@/.snapshots/44/snapshot
+				@/.snapshots/45/snapshot
+
+
+SBW-DEV:/.snapshots # btrfs qgroup show .
+qgroupid         rfer         excl 
+--------         ----         ---- 
+0/5          16.00KiB     16.00KiB 
+0/257        16.00KiB     16.00KiB 
+0/258       100.00KiB    100.00KiB 
+0/259         4.98GiB    128.00KiB 
+0/260         2.37MiB      2.37MiB 
+0/261        16.00KiB     16.00KiB 
+0/262        16.00KiB     16.00KiB 
+0/263        16.00KiB     16.00KiB 
+0/264        16.00KiB     16.00KiB 
+0/265         7.88MiB      7.88MiB 
+0/266        16.00KiB     16.00KiB 
+0/267        15.45MiB     15.45MiB 
+0/268        16.00KiB     16.00KiB 
+0/269        16.00KiB     16.00KiB 
+0/270        16.00KiB     16.00KiB 
+0/271        16.00KiB     16.00KiB 
+0/272        16.00KiB     16.00KiB 
+0/273        16.00KiB     16.00KiB 
+0/274        16.00KiB     16.00KiB 
+0/275        16.00KiB     16.00KiB 
+0/276        19.36MiB     19.36MiB 
+0/277        16.00KiB     16.00KiB 
+0/278        48.00KiB     48.00KiB 
+0/279        26.39MiB     26.39MiB 
+0/315        14.80GiB    544.00KiB 
+0/326        24.19GiB    216.00KiB 
+0/327        24.19GiB    164.00KiB 
+0/339        34.62GiB    192.00KiB 
+0/340        34.62GiB    176.00KiB 
+0/341        34.62GiB    128.00KiB 
+0/342        34.62GiB    224.00KiB 
+0/343        34.62GiB    176.00KiB 
+0/357        49.02GiB    320.00KiB 
+0/358        49.02GiB    384.00KiB 
+0/369        31.38GiB    176.00KiB 
+0/370        31.38GiB    176.00KiB 
+0/371        31.38GiB    176.00KiB 
+0/372        31.38GiB    176.00KiB 
+0/373        19.43GiB     80.00KiB 
+0/374        19.43GiB     80.00KiB 
+0/375        19.43GiB    112.00KiB 
+0/376        19.43GiB    308.00KiB 
+0/377         4.98GiB    128.00KiB 
+0/378         4.98GiB     80.00KiB 
+0/379         4.98GiB     80.00KiB 
+0/380         4.98GiB     80.00KiB 
+0/381         4.98GiB     80.00KiB 
+0/382         4.98GiB     80.00KiB 
+0/383         4.98GiB    128.00KiB 
+0/384         4.98GiB     96.00KiB 
+1/0          49.03GiB     44.14GiB 
+
+SBW-DEV:/.snapshots # btrfs subvolume list /
+ID 257 gen 125 top level 5 path @
+ID 258 gen 2225 top level 257 path @/.snapshots
+ID 259 gen 2231 top level 258 path @/.snapshots/1/snapshot
+ID 260 gen 1539 top level 257 path @/boot/grub2/i386-pc
+ID 261 gen 1539 top level 257 path @/boot/grub2/x86_64-efi
+ID 262 gen 2190 top level 257 path @/home
+ID 263 gen 125 top level 257 path @/opt
+ID 264 gen 1539 top level 257 path @/srv
+ID 265 gen 2231 top level 257 path @/tmp
+ID 266 gen 1539 top level 257 path @/usr/local
+ID 267 gen 2215 top level 257 path @/var/cache
+ID 268 gen 1348 top level 257 path @/var/crash
+ID 269 gen 1539 top level 257 path @/var/lib/libvirt/images
+ID 270 gen 1539 top level 257 path @/var/lib/machines
+ID 271 gen 1539 top level 257 path @/var/lib/mailman
+ID 272 gen 1539 top level 257 path @/var/lib/mariadb
+ID 273 gen 1539 top level 257 path @/var/lib/mysql
+ID 274 gen 1539 top level 257 path @/var/lib/named
+ID 275 gen 1539 top level 257 path @/var/lib/pgsql
+ID 276 gen 2231 top level 257 path @/var/log
+ID 277 gen 2190 top level 257 path @/var/opt
+ID 278 gen 2231 top level 257 path @/var/spool
+ID 279 gen 2217 top level 257 path @/var/tmp
+ID 315 gen 1253 top level 258 path @/.snapshots/20/snapshot
+ID 326 gen 1260 top level 258 path @/.snapshots/21/snapshot
+ID 327 gen 1263 top level 258 path @/.snapshots/22/snapshot
+ID 339 gen 1290 top level 258 path @/.snapshots/23/snapshot
+ID 340 gen 1292 top level 258 path @/.snapshots/24/snapshot
+ID 341 gen 1293 top level 258 path @/.snapshots/25/snapshot
+ID 342 gen 1295 top level 258 path @/.snapshots/26/snapshot
+ID 343 gen 1299 top level 258 path @/.snapshots/27/snapshot
+ID 357 gen 1364 top level 258 path @/.snapshots/28/snapshot
+ID 358 gen 1367 top level 258 path @/.snapshots/29/snapshot
+ID 369 gen 2043 top level 258 path @/.snapshots/30/snapshot
+ID 370 gen 2044 top level 258 path @/.snapshots/31/snapshot
+ID 371 gen 2045 top level 258 path @/.snapshots/32/snapshot
+ID 372 gen 2046 top level 258 path @/.snapshots/33/snapshot
+ID 373 gen 2085 top level 258 path @/.snapshots/34/snapshot
+ID 374 gen 2086 top level 258 path @/.snapshots/35/snapshot
+ID 375 gen 2087 top level 258 path @/.snapshots/36/snapshot
+ID 376 gen 2091 top level 258 path @/.snapshots/37/snapshot
+ID 377 gen 2197 top level 258 path @/.snapshots/38/snapshot
+ID 378 gen 2198 top level 258 path @/.snapshots/39/snapshot
+ID 379 gen 2199 top level 258 path @/.snapshots/40/snapshot
+ID 380 gen 2201 top level 258 path @/.snapshots/41/snapshot
+ID 381 gen 2203 top level 258 path @/.snapshots/42/snapshot
+ID 382 gen 2205 top level 258 path @/.snapshots/43/snapshot
+ID 383 gen 2217 top level 258 path @/.snapshots/44/snapshot
+ID 384 gen 2218 top level 258 path @/.snapshots/45/snapshot
+
+SBW-DEV:/.snapshots # snapper list
+Type   | #  | Pre # | Date                     | User | Cleanup | Description           | Userdata
+-------+----+-------+--------------------------+------+---------+-----------------------+---------
+single | 0  |       |                          | root |         | current               |         
+single | 1  |       | Wed Apr 22 22:56:46 2020 | root |         | first root filesystem |         
+pre    | 20 |       | Thu Apr 23 14:08:38 2020 | root | number  | yast disk             |         
+post   | 21 | 20    | Thu Apr 23 14:12:31 2020 | root | number  |                       |         
+pre    | 22 |       | Thu Apr 23 14:13:08 2020 | root | number  | yast disk             |         
+post   | 23 | 22    | Thu Apr 23 14:29:36 2020 | root | number  |                       |         
+pre    | 24 |       | Thu Apr 23 14:29:57 2020 | root | number  | yast disk             |         
+pre    | 25 |       | Thu Apr 23 14:29:59 2020 | root | number  | yast disk             |         
+post   | 26 | 25    | Thu Apr 23 14:30:43 2020 | root | number  |                       |         
+post   | 27 | 24    | Thu Apr 23 14:32:21 2020 | root | number  |                       |         
+pre    | 28 |       | Thu Apr 23 15:14:46 2020 | root | number  | yast sw_single        |         
+post   | 29 | 28    | Thu Apr 23 15:16:33 2020 | root | number  |                       |         
+pre    | 30 |       | Thu Apr 23 16:34:08 2020 | root | number  | yast disk             |         
+pre    | 31 |       | Thu Apr 23 16:34:09 2020 | root | number  | yast disk             |         
+post   | 32 | 31    | Thu Apr 23 16:34:19 2020 | root | number  |                       |         
+post   | 33 | 30    | Thu Apr 23 16:34:20 2020 | root | number  |                       |         
+pre    | 34 |       | Thu Apr 23 16:59:02 2020 | root | number  | yast disk             |         
+pre    | 35 |       | Thu Apr 23 16:59:03 2020 | root | number  | yast disk             |         
+post   | 36 | 35    | Thu Apr 23 16:59:10 2020 | root | number  |                       |         
+post   | 37 | 34    | Thu Apr 23 17:00:00 2020 | root | number  |                       |         
+pre    | 38 |       | Thu Apr 23 18:15:00 2020 | root | number  | yast disk             |         
+pre    | 39 |       | Thu Apr 23 18:15:01 2020 | root | number  | yast disk             |         
+pre    | 40 |       | Thu Apr 23 18:15:02 2020 | root | number  | yast disk             |         
+post   | 41 | 40    | Thu Apr 23 18:15:43 2020 | root | number  |                       |         
+post   | 42 | 39    | Thu Apr 23 18:15:46 2020 | root | number  |                       |         
+post   | 43 | 38    | Thu Apr 23 18:15:49 2020 | root | number  |                       |         
+pre    | 44 |       | Thu Apr 23 18:23:20 2020 | root | number  | yast sw_single        |         
+post   | 45 | 44    | Thu Apr 23 18:23:44 2020 | root | number  |                       |   
+      
+SBW-DEV:/.snapshots # btrfs fi show
+Label: none  uuid: 35f5d43e-df43-40da-bb79-d62f96749ccb
+	Total devices 1 FS bytes used 49.28GiB
+	devid    1 size 60.00GiB used 54.80GiB path /dev/mapper/system-root
+
+SBW-DEV:/.snapshots # btrfs fi df /
+Data, single: total=52.74GiB, used=48.90GiB
+System, DUP: total=32.00MiB, used=16.00KiB
+Metadata, DUP: total=1.00GiB, used=386.09MiB
+GlobalReserve, single: total=68.39MiB, used=0.00B
+SBW-DEV:/.snapshots # btrfs fi usage /
+Overall:
+    Device size:		  60.00GiB
+    Device allocated:		  54.80GiB
+    Device unallocated:		   5.20GiB
+    Device missing:		     0.00B
+    Used:			  49.65GiB
+    Free (estimated):		   9.04GiB	(min: 6.44GiB)
+    Data ratio:			      1.00
+    Metadata ratio:		      2.00
+    Global reserve:		  68.39MiB	(used: 0.00B)
+
+Data,single: Size:52.74GiB, Used:48.90GiB
+   /dev/mapper/system-root	  52.74GiB
+
+Metadata,DUP: Size:1.00GiB, Used:386.09MiB
+   /dev/mapper/system-root	   2.00GiB
+
+System,DUP: Size:32.00MiB, Used:16.00KiB
+   /dev/mapper/system-root	  64.00MiB
+
+Unallocated:
+   /dev/mapper/system-root	   5.20GiB
+
+
+
+
+Cleaning up snapper snapshots
+
+snapper list
+snapper delete 1-3656
+
+
+SBW-DEV:~ # btrfs subvolume show /
+/
+	Name: 			snapshot
+	UUID: 			e1c636a8-4508-2e46-a911-cd88a4ce0e4c
+	Parent UUID: 		7975cd7b-a7a8-da40-87f0-3dbd9d80f117
+	Received UUID: 		-
+	Creation time: 		2020-04-22 22:56:46 +0800
+	Subvolume ID: 		259
+	Generation: 		2438
+	Gen at creation: 	11
+	Parent ID: 		258
+	Top level ID: 		258
+	Flags: 			-
+	Snapshot(s):
+				@/.snapshots/45/snapshot
+
+SBW-DEV:~ # btrfs qgroup show .
+WARNING: Qgroup data inconsistent, rescan recommended    ==> btrfs quota rescan -w /
+qgroupid         rfer         excl 
+--------         ----         ---- 
+0/5          16.00KiB     16.00KiB 
+0/257        16.00KiB     16.00KiB 
+0/258        16.00KiB     16.00KiB 
+0/259         4.98GiB    592.00KiB 
+0/260         2.37MiB      2.37MiB 
+0/261        16.00KiB     16.00KiB 
+0/262        16.00KiB     16.00KiB 
+0/263        16.00KiB     16.00KiB 
+0/264        16.00KiB     16.00KiB 
+0/265         7.61MiB      7.61MiB 
+0/266        24.00KiB     24.00KiB 
+0/267        15.45MiB     15.45MiB 
+0/268        16.00KiB     16.00KiB 
+0/269        16.00KiB     16.00KiB 
+0/270        16.00KiB     16.00KiB 
+0/271        16.00KiB     16.00KiB 
+0/272        16.00KiB     16.00KiB 
+0/273        16.00KiB     16.00KiB 
+0/274        16.00KiB     16.00KiB 
+0/275        16.00KiB     16.00KiB 
+0/276        20.87MiB     20.87MiB 
+0/277        16.00KiB     16.00KiB 
+0/278        48.00KiB     48.00KiB 
+0/279        26.39MiB     26.39MiB 
+0/384         4.98GiB    480.00KiB 
+1/0          49.03GiB     44.14GiB 
+
+SBW-DEV:~ # btrfs quota rescan -w /
+quota rescan started
+
+
+SBW-DEV:~ # btrfs qgroup show .
+qgroupid         rfer         excl 
+--------         ----         ---- 
+0/5          16.00KiB     16.00KiB   ID 为 5（别名为 0）
+0/257        16.00KiB     16.00KiB 
+0/258        16.00KiB     16.00KiB 
+0/259         4.98GiB    592.00KiB 
+0/260         2.37MiB      2.37MiB 
+0/261        16.00KiB     16.00KiB 
+0/262        16.00KiB     16.00KiB 
+0/263        16.00KiB     16.00KiB 
+0/264        16.00KiB     16.00KiB 
+0/265         7.61MiB      7.61MiB 
+0/266        24.00KiB     24.00KiB 
+0/267        15.45MiB     15.45MiB 
+0/268        16.00KiB     16.00KiB 
+0/269        16.00KiB     16.00KiB 
+0/270        16.00KiB     16.00KiB 
+0/271        16.00KiB     16.00KiB 
+0/272        16.00KiB     16.00KiB 
+0/273        16.00KiB     16.00KiB 
+0/274        16.00KiB     16.00KiB 
+0/275        16.00KiB     16.00KiB 
+0/276        21.28MiB     21.28MiB 
+0/277        16.00KiB     16.00KiB 
+0/278        48.00KiB     48.00KiB 
+0/279        26.39MiB     26.39MiB 
+0/384         4.98GiB    480.00KiB 
+1/0           4.98GiB    480.00KiB 
+
+
+SBW-DEV:~ # btrfs subvolume list /
+ID 257 gen 125 top level 5 path @
+ID 258 gen 2423 top level 257 path @/.snapshots
+ID 259 gen 2442 top level 258 path @/.snapshots/1/snapshot
+ID 260 gen 1539 top level 257 path @/boot/grub2/i386-pc
+ID 261 gen 1539 top level 257 path @/boot/grub2/x86_64-efi
+ID 262 gen 2190 top level 257 path @/home
+ID 263 gen 125 top level 257 path @/opt
+ID 264 gen 1539 top level 257 path @/srv
+ID 265 gen 2442 top level 257 path @/tmp
+ID 266 gen 2349 top level 257 path @/usr/local
+ID 267 gen 2215 top level 257 path @/var/cache
+ID 268 gen 1348 top level 257 path @/var/crash
+ID 269 gen 1539 top level 257 path @/var/lib/libvirt/images
+ID 270 gen 1539 top level 257 path @/var/lib/machines
+ID 271 gen 1539 top level 257 path @/var/lib/mailman
+ID 272 gen 1539 top level 257 path @/var/lib/mariadb
+ID 273 gen 1539 top level 257 path @/var/lib/mysql
+ID 274 gen 1539 top level 257 path @/var/lib/named
+ID 275 gen 1539 top level 257 path @/var/lib/pgsql
+ID 276 gen 2442 top level 257 path @/var/log
+ID 277 gen 2190 top level 257 path @/var/opt
+ID 278 gen 2442 top level 257 path @/var/spool
+ID 279 gen 2423 top level 257 path @/var/tmp
+ID 384 gen 2218 top level 258 path @/.snapshots/45/snapshot
+
+SBW-DEV:~ # snapper list
+Type   | #  | Pre # | Date                     | User | Cleanup | Description           | Userdata
+-------+----+-------+--------------------------+------+---------+-----------------------+---------
+single | 0  |       |                          | root |         | current               |         
+single | 1  |       | Wed Apr 22 22:56:46 2020 | root |         | first root filesystem |         
+post   | 45 | 44    | Thu Apr 23 18:23:44 2020 | root | number  |                       |      
+   
+SBW-DEV:~ # btrfs fi show
+Label: none  uuid: 35f5d43e-df43-40da-bb79-d62f96749ccb
+	Total devices 1 FS bytes used 5.09GiB
+	devid    1 size 60.00GiB used 53.80GiB path /dev/mapper/system-root
+
+SBW-DEV:~ # btrfs fi df /
+Data, single: total=51.74GiB, used=4.86GiB
+System, DUP: total=32.00MiB, used=16.00KiB
+Metadata, DUP: total=1.00GiB, used=235.11MiB
+GlobalReserve, single: total=20.80MiB, used=0.00B
+
+
+SBW-DEV:/mnt # btrfs-du
+Subvolume                                                         Total  Exclusive  ID
+─────────────────────────────────────────────────────────────────────────────────────────
+@                                                              16.00KiB   16.00KiB  257
+@/.snapshots                                                   16.00KiB   16.00KiB  258
+@/.snapshots/1/snapshot                                         4.98GiB  592.00KiB  259
+@/boot/grub2/i386-pc                                            2.37MiB    2.37MiB  260
+@/boot/grub2/x86_64-efi                                        16.00KiB   16.00KiB  261
+@/home                                                         16.00KiB   16.00KiB  262
+@/opt                                                          16.00KiB   16.00KiB  263
+@/srv                                                          16.00KiB   16.00KiB  264
+@/tmp                                                           7.60MiB    7.60MiB  265
+@/usr/local                                                    24.00KiB   24.00KiB  266
+@/var/cache                                                    15.44MiB   15.44MiB  267
+@/var/crash                                                    16.00KiB   16.00KiB  268
+@/var/lib/libvirt/images                                       16.00KiB   16.00KiB  269
+@/var/lib/machines                                             16.00KiB   16.00KiB  270
+@/var/lib/mailman                                              16.00KiB   16.00KiB  271
+@/var/lib/mariadb                                              16.00KiB   16.00KiB  272
+@/var/lib/mysql                                                16.00KiB   16.00KiB  273
+@/var/lib/named                                                16.00KiB   16.00KiB  274
+@/var/lib/pgsql                                                16.00KiB   16.00KiB  275
+@/var/log                                                      21.39MiB   21.39MiB  276
+@/var/opt                                                      16.00KiB   16.00KiB  277
+@/var/spool                                                    48.00KiB   48.00KiB  278
+@/var/tmp                                                      26.38MiB   26.38MiB  279
+@/.snapshots/45/snapshot                                        4.98GiB  480.00KiB  384
+─────────────────────────────────────────────────────────────────────────────────────────
+Total exclusive data                                                           74.55MiB
+
