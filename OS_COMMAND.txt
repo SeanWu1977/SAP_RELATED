@@ -1,18 +1,20 @@
 SLES
+
+# tail file without parameter start with # and empty line
+tail -f inifile.params | grep -v "#" | grep -v '^$'
+
+## NFS Setting
 # export
-
 nfsstat –s #check version
-
-•chkconfig nfs on
-•service rpcbind start
-•service nfs start
+chkconfig nfs on
+service rpcbind start
+service nfs start
 
 systemctl start nfs
-systemctl start rpcbinsu 
+systemctl start rpcbind 
 
 vi /etc/exports
 /another/exported/directory 192.168.0.3(rw,sync,no_root_squash)
-
 
 # import
 mount -t nfs4 <server_name>:<shared_directory> <shared_directory>
