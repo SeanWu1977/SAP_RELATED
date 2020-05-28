@@ -1,0 +1,8 @@
+# DNS 
+/etc/resolv.conf
+
+# network adaptor
+/etc/sysconfig/network/ifcfg-eth0
+
+# Gateway
+route -n
