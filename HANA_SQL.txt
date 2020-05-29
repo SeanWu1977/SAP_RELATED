@@ -17,3 +17,6 @@ ALTER SYSTEM RECLAIM DATAVOLUME 120 DEFRAGMENT
 ALTER SYSTEM RECLAIM DATAVOLUME [SPACE] [<host_port>]   <percentage_of_payload_size> <shrink_mode>
 **  percentage_of_payload_size > 105
 **  shrink_mode = DEFRAGMENT
+
+## List TanetDB Status
+select * from "SYS"."M_DATABASES"
