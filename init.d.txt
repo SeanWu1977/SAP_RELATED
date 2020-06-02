@@ -75,3 +75,47 @@ super deamon 設定檔 : /etc/xinetd.conf
 5.init 程式開始執行系統初始化 (/etc/rc.d/rc.sysinit)
 (*) 6.依據 init 的設定進行 daemon start (/etc/rc.d/rc[0-6].d/*)
 7.載入本機設定 (/etc/rc.d/rc.local)
+
+
+
+
+
+################# simple steps ##########
+Create a script and place in /etc/init.d (e.g /etc/init.d/myscript). The script should have the following format:
+#!/bin/bash
+# chkconfig: 2345 20 80
+# description: Description comes here....
+
+# Source function library.
+. /etc/init.d/functions
+
+start() {
+    # code to start app comes here 
+    # example: daemon program_name &
+}
+
+stop() {
+    # code to stop app comes here 
+    # example: killproc program_name
+}
+
+case "$1" in 
+    start)
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    status)
+       # code to check status of app comes here 
+       # example: status program_name
+       ;;
+    *)
+       echo "Usage: $0 {start|stop|status|restart}"
+esac
+
+exit 0 
