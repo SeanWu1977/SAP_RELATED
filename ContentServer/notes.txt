@@ -1,4 +1,4 @@
 # security
       SAP         ->       CS Server 
-    pri-key                 pub-key(SAP Certificate)
+    pri-key                 pub-key(SAP Certificate, use CSADMIN to transfer certificate)
 (URL+signature)   ->    *decode and check*
