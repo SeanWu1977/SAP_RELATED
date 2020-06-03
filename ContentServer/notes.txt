@@ -1,0 +1,4 @@
+# security
+      SAP         ->       CS Server 
+    pri-key                 pub-key
+(URL+signature)   ->    *decode and check*
