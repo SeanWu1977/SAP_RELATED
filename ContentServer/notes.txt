@@ -1,4 +1,21 @@
 # security
       SAP         ->       CS Server 
-    pri-key                 pub-key(SAP Certificate, use CSADMIN to transfer certificate)
+    pri-key                 pub-key(SAP Certificate) <1>
 (URL+signature)   ->    *decode and check*
+
+# Cite
+<1> SAP use CSADMIN to transfer certificate to CS Server
+
+
+# Concept
+Certificate                   Certificate List                                            PSE(Public Key Security Environmnet)
+===============================================================================================================================
+public keys(X.509)            on CS Server                                                binary representation of a certificate list
+issuer                         -> store certificate for multiple SAP systems              certificate activatoin (CSADMIN) 
+validity period                -> storage format : PSE                                    conver certificate list ASCII->binaray 
+
+
+# How to :
+
+
+
