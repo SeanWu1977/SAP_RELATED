@@ -1,5 +1,5 @@
 (ALL)SAP_BASIS_SYSTEM_CONFIG_CHECK
-
+(ALL)SAP_BASIS_SETUP_INITIAL_CONFIG
 (F) SAP_GATEWAY_BASIC_CONFIG
 (B) SAP_SAP2GATEWAY_TRUSTED_CONFIG
 (F) SAP_GATEWAY_ADD_SYSTEM
@@ -10,3 +10,19 @@
 
 2834415 - Composite SAP note= Rapid Activation for SAP Fiori in SAP S4HANA 1909
 2289865 - Configuration steps for S/4 HANA Analytics
+
+
+
+The following task lists are available with 740 SP8 installation or the implementation of this :
+SAP_ABAP2ABAP_SSO_CONFIG	Initial Setup Use Case - Enable SSO between 2 ABAP systems
+SAP_ABAP2ABAP_TRUST_CLIENT_CFG	Initial Setup Use Case - Create ABAP trust on Client Side
+SAP_ABAP2ABAP_TRUST_SERVER_CFG 	Initial Setup Use Case - Create ABAP Trust on Server Side
+SAP_BASIS_SSL_CHECK	Smoke Test Use Case - Basis SSL Check
+SAP_BASIS_SYSTEM_CONFIG_CHECK	 Smoke Test Use Case - Basis System Check
+
+The following task lists are available with 7.4 SP8 installation or the implementation of this :
+SAP_GATEWAY_BASIC_CONFIG	SAP Gateway - Basic Configuration
+SAP_FIORI_LAUNCHPAD_INIT_SETUP	SAP Fiori Launchpad Initial Setup
+SAP_SAP2GATEWAY_TRUSTED_CONFIG	Create Trusted Connection from SAP System to SAP Gateway 
+SAP_GATEWAY_ADD_SYSTEM	SAP Gateway - Add Backend System
+SAP_GATEWAY_ADD_SYSTEM_ALIAS	SAP Gateway - Maintain System Alias
