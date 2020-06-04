@@ -1,3 +1,13 @@
+ocmponent:
+
+SAP Gateway : SAP_GWFND (F/B/E)
+Central UI : SAP_UI (F/E)
+Product UI : UIS4HOP1/UIBAS001 (F/E)
+
+
+
+
+
 SAP Fiori Home - SAP Fiori - Community Wiki
 https://wiki.scn.sap.com/wiki/display/Fiori/SAP+Fiori+Home
 
