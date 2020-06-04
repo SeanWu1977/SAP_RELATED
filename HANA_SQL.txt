@@ -20,3 +20,10 @@ ALTER SYSTEM RECLAIM DATAVOLUME [SPACE] [<host_port>]   <percentage_of_payload_s
 
 ## List TanetDB Status
 select * from "SYS"."M_DATABASES"
+
+
+## remove tanent DB
+hdbsql -i 40 -d SystemDB -u SYSTEM -p <password>
+
+ALTER SYSTEM STOP DATABASE NM2
+drop database NM2
