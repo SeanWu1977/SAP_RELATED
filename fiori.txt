@@ -1,4 +1,4 @@
-ocmponent:
+Component:
 
 SAP Gateway : SAP_GWFND (F/B/E)
 Central UI : SAP_UI (F/E)
