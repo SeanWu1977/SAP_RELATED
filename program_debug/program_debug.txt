@@ -1,0 +1,11 @@
+# smartforms error
+
+(1) Formatting error sy-subrc = 1
+After the smartform call where you get sy-subrc = 1 , check for values in variables
+
+SY-MSGV1
+SY-MSGV2
+SY-MSGV3
+SY-MSGV4
+
+這邊會顯示smartform 裡有問題的元件。
