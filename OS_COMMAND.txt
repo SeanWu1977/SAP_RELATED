@@ -18,3 +18,6 @@ vi /etc/exports
 
 # import
 mount -t nfs4 <server_name>:<shared_directory> <shared_directory>
+
+# check sles version
+cat /etc/*-release
