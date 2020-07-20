@@ -36,11 +36,12 @@ sp_dboption <DB>, 'trunc',true
 
 # start server (login syb<sid>)
 cd /sybase/N74/ASE-16_0/bin
-./startserver -f /sybase/N74/ASE-16_0/install/RUN_N74
+./startserver -f /sybase/N74/ASE-16_0/install/RUN_N74 -f sybase/N74/ASE-16_0/install/RUN_N74_BS
 # stop server
-> shutdown 
+> shutdown  SYB_BACKUP
 > go
-
+> shutdown
+> go
 # check device
 sp_helpdevice
 
