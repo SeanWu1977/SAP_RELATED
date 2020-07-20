@@ -1,3 +1,6 @@
+ # SAP Kernel : Sybase DB Client path
+ /sapmnt/SID/global/syb/OS_PLATFORM/
+
 log file : /sybase/<SID>/ASE-16_0/install
 log file : /hana/shared/HDB/HDB00/s15sp1-h2-ha1/trace
 
