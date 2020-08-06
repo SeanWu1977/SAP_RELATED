@@ -21,3 +21,22 @@ mount -t nfs4 <server_name>:<shared_directory> <shared_directory>
 
 # check sles version
 cat /etc/*-release
+
+
+# memory 1382721 - Linux: Interpreting the output of the command 'free'
+
+free -m
+
+              total        used        free      shared  buff/cache   available
+Mem:       16140336      813732    14513316       54596      813288    14981060
+Swap:      15728636           0    15728636
+
+
+egrep "^Cached|Shmem" /proc/meminfo
+Cached:           747500 kB
+Shmem:             54596 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+
+Total free = free (14513316) + cache (747500 - 54596) + shared (54596)
+
