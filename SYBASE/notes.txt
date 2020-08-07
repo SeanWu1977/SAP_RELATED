@@ -84,4 +84,5 @@ sp_configure  "default data cache"
 sp_helpcache
 
 
-
+# db user list
+sp_helpuser
