@@ -1,5 +1,10 @@
 SLES
 
+# check port in use
+lsof -i -P -n | grep LISTEN
+lsof -i:22
+
+
 # tail file without parameter start with # and empty line
 tail -f inifile.params | grep -v "#" | grep -v '^$'
 
