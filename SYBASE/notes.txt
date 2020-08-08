@@ -1,3 +1,12 @@
+# check port in use
+lsof -i -P -n | grep LISTEN
+lsof -i:22
+
+
+# /sybase/<SID>/interface
+change default port
+ 
+ 
  # SAP Kernel : Sybase DB Client path
  /sapmnt/SID/global/syb/OS_PLATFORM/
 
