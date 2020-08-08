@@ -5,7 +5,13 @@ lsof -i:22
 
 # /sybase/<SID>/interface
 change default port
- 
+
+
+# change sap connect sybase port
+DEFAULT.PFL
+dbs/syb/port = 4901
+j2ee/dbport = 4901
+
  
  # SAP Kernel : Sybase DB Client path
  /sapmnt/SID/global/syb/OS_PLATFORM/
