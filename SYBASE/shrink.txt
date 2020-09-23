@@ -1,0 +1,13 @@
+2581845 - How to reduce physical device file size of a database? - SAP ASE
+
+# check device use by DB
+sp_helpdb <SID>
+# check device name
+sp_helpdevice
+# check device
+sp_helpdevice  device_test
+#simulate shrink 10G (reduce 10G)
+sp_shrink 'device', 'device_test','10G', 'simulate'
+
+use master
+sp_shrink 'device', 'device_test','10G',
