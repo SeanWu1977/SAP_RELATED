@@ -1,0 +1,122 @@
+*&---------------------------------------------------------------------*
+*& Report  ZINCIDENT_UNSOLVE
+*&
+*&---------------------------------------------------------------------*
+*& 
+*&
+*&---------------------------------------------------------------------*
+REPORT ZINCIDENT_UNSOLVE2.
+
+Tables: Z_OPEN_TICKET.
+
+DATA: wa_ma TYPE Z_OPEN_TICKET.
+DATA: it_ma TYPE STANDARD TABLE OF Z_OPEN_TICKET.
+DATA: send_request       TYPE REF TO cl_bcs.
+DATA: document           TYPE REF TO cl_document_bcs.
+DATA: sender             TYPE REF TO cl_sapuser_bcs.
+DATA: recipient          TYPE REF TO if_recipient_bcs.
+DATA: exception_info     TYPE REF TO if_os_exception_info,
+bcs_exception      TYPE REF TO cx_bcs,
+v_subj(50),
+t_hex TYPE solix_tab,
+html_string TYPE string,
+xhtml_string TYPE xstring,
+v_message(100),
+v_mail TYPE  sza5_d0700-smtp_addr.
+v_subj = 'PCOE 待處理事件清單'.
+v_mail = 'sean.wu@itts.com.tw'.
+CONSTANTS: c_delimiter(1) TYPE c VALUE cl_abap_char_utilities=>newline.
+
+SELECT * from Z_OPEN_TICKET into table it_ma.
+
+IF not it_ma[] IS INITIAL.
+
+
+
+* format html table header
+    CONCATENATE html_string
+    '<html><body><strong>PCOE 待處理事件清單</strong><br/><br/>'
+    '<table style="border: 1px solid black;border-collapse: separate; border-spacing: 0px; background-color: #CDCDCD;">'
+    '<tr><th style="border: 1px solid black;">Incident ID</th><th style="border: 1px solid black;">Description</th></tr>'
+    into html_string SEPARATED BY C_DELIMITER.
+
+* format html content
+    LOOP AT it_ma into wa_ma.
+      CONCATENATE html_string '<tr><td style="border: 1px solid black;">' wa_ma-OBJECT_ID '</td><td>'
+      wa_ma-DESCRIPTION '</td></tr style="border: 1px solid black;">' C_DELIMITER INTO html_string.
+    ENDLOOP.
+
+* end of html
+    CONCATENATE html_string '</table></body></html>' INTO html_string SEPARATED BY C_DELIMITER.
+
+    TRY.
+*Create persistent send request
+     send_request = cl_bcs=>create_persistent( ).
+
+     CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
+     EXPORTING
+     text           = html_string
+*   MIMETYPE       = ''
+*   ENCODING       =
+     IMPORTING
+     buffer         = xhtml_string
+     EXCEPTIONS
+     failed         = 1
+     OTHERS         = 2.
+
+     CALL FUNCTION 'SCMS_XSTRING_TO_BINARY'
+     EXPORTING
+     buffer                = xhtml_string
+*   APPEND_TO_TABLE       = ' '
+* IMPORTING
+*   OUTPUT_LENGTH         =
+     TABLES
+     binary_tab            = t_hex.
+
+     document = cl_document_bcs=>create_document(
+     i_type    = 'HTM'
+     i_hex    = t_hex
+     i_subject = v_subj ).
+
+* Add document to send request
+     CALL METHOD send_request->set_document( document ).
+
+* Get sender object
+     sender = cl_sapuser_bcs=>create( sy-uname ).
+
+* Add sender
+     CALL METHOD send_request->set_sender
+     EXPORTING
+     i_sender = sender.
+
+
+
+     recipient = cl_cam_address_bcs=>create_internet_address( v_mail ).
+* Add recipient with its respective attributes to send request
+     CALL METHOD send_request->add_recipient
+     EXPORTING
+     i_recipient = recipient.
+
+* Set that you don't need a Return Status E-mail
+     DATA: status_mail TYPE bcs_stml.
+     status_mail = 'N'.
+     CALL METHOD send_request->set_status_attributes
+     EXPORTING
+     i_requested_status = status_mail
+     i_status_mail      = status_mail.
+
+* set send immediately flag
+     send_request->set_send_immediately( 'X' ).
+
+* Send document
+     CALL METHOD send_request->send( ).
+
+     COMMIT WORK.
+
+     CATCH cx_bcs INTO bcs_exception.
+     v_message = bcs_exception->get_text( ).
+     MESSAGE e000(su) WITH v_message.
+
+   ENDTRY.
+
+ENDIF.
