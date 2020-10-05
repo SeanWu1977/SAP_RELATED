@@ -24,7 +24,7 @@ xhtml_string TYPE xstring,
 v_message(100),
 v_mail TYPE  sza5_d0700-smtp_addr.
 v_subj = 'PCOE 待處理事件清單'.
-v_mail = 'sean.wu@itts.com.tw'.
+v_mail = 'email'.
 CONSTANTS: c_delimiter(1) TYPE c VALUE cl_abap_char_utilities=>newline.
 
 SELECT * from Z_OPEN_TICKET into table it_ma.
