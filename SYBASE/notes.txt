@@ -49,7 +49,7 @@ rsecssfx put DB_CONNECT/DEFAULT_DB_PASSWORD <password>
 
 # disable archiving log mode
 # sp_dboption [dbname, optname, {true | false}]
-sp_dboption <DB>, 'trunc',true
+sp_dboption database_name, "trunc log on chkpt", false
 
 
 # start server (login syb<sid>)
@@ -101,3 +101,36 @@ sp_helpcache
 
 # db user list
 sp_helpuser
+
+
+設定device每次extend 要多少以及extend高值
+exec sp_dbextend 'set', 'device', SMA_data_001 , '2048m', '102400m'
+go
+
+設定db每次extend 要多少，不設最高值
+exec sp_dbextend 'set', 'database', SMA, 'default', '1024m'
+go
+
+小於200m就extend 1024m
+exec sp_dbextend 'set', 'threshold', SMA, 'default', '200m' 
+go
+
+## 修改語法
+exec sp_dbextend 'modify', 'device', SMA_data_001', 'growby', '300m' 
+go
+exec sp_dbextend 'modify', 'database', SMA, default, 'growby','10m'
+go
+
+## END
+
+檢查語法
+exec sp_dbextend 'list' 
+go
+exec sp_dbextend 'list', 'database', testdb
+go
+exec sp_dbextend 'list', 'threshold' 
+go
+
+
+ 
+
